@@ -1,6 +1,5 @@
 <template>
   <div class="sourceArea">
-
     <!-- Nav tabs -->
     <ul class="nav nav-tabs" role="tablist">
       <li role="presentation" class="active"><a href="#memory" aria-controls="memory" role="tab" data-toggle="tab">memory</a></li>
@@ -10,7 +9,7 @@
     </ul>
     <!-- Tab panes -->
     <div class="tab-content">
-      <div role="tabpanel" class="tab-pane active" id="memory"><div class="mem"></div></div>
+      <div role="tabpanel" class="tab-pane active" id="memory"><div class="memm"></div></div>
       <div role="tabpanel" class="tab-pane" id="cpu"><span v-for="(item,index) in cpuarr" class="cpu"></span></div>
       <div role="tabpanel" class="tab-pane" id="disk"><span v-for="(item,index) in diskarr" class="disk"></span></div>
       <div role="tabpanel" class="tab-pane" id="process">
@@ -23,13 +22,68 @@
 <script type="text/javascript">
   import echarts from 'echarts';
   import process from '@/components/process'
+
   $('#myTabs a').click(function (e) {
     e.preventDefault();
     $(this).tab('show')
   });
+  $(function () {
+        var socket = io.connect('http://localhost:8082');
+        var freeMem = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+          totalMem;
+        var memChart = echarts.init(document.getElementsByClassName('memm')[0]);
+        var memoption = {
+          title: {
+            text: '可用内存/GB'
+          },
+          tooltip: {
+            trigger: 'axis',
+            axisPointer: {
+              animation: false
+            }
+          },
+
+          xAxis: {
+            type: 'category',
+            boundaryGap: false,
+            data: [0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
+          },
+          yAxis: {
+            type: 'value',
+            min: 0,
+            max: 32
+          },
+          series: {
+            name: '当前可用内存/GB',
+            type: 'line',
+            data: freeMem,
+            smooth: true,
+            symbol: 'none',
+            stack: 'a',
+            areaStyle: {
+              normal: {}
+            }
+          }
+
+        };
+        socket.on('memData', function (updata) {
+          totalMem = updata.totalMem;
+          freeMem.shift();
+          freeMem.push(updata.freeMem);
+          //内存
+          var axisData = (new Date()).toLocaleTimeString().replace(/^\D*/, '');
+          memoption.series.data = freeMem;
+          memoption.xAxis.data.shift();
+          memoption.yAxis.max = totalMem;
+          memoption.xAxis.data.push(axisData);
+          memChart.setOption(memoption);
+        });
+  });
+
 
 
   export default{
+
     data:()=>({
       author:"mrk",
       cpuarr:0,
@@ -105,51 +159,6 @@
                 length: 10,
                 length2: 20
               }
-            },
-            selectedMode:50,
-            animationType: 'scale',
-            animationEasing: 'elasticOut',
-            animationDelay: function (idx) {
-              return 200;
-            }
-          }
-      },
-      memData:{},
-      memChart:[],
-      freeMem:[0,0,0,0,0,0,0,0,0,0],
-      memoption : {
-        title: {
-          text: '内存数据'
-        },
-        tooltip: {
-          trigger: 'axis',
-          axisPointer: {
-            animation: false
-          }
-        },
-
-        xAxis:
-          {
-            type: 'category',
-            boundaryGap: false,
-            data: [0,0,0,0,0,0,0,0,0,0]
-          },
-        yAxis:
-          {
-            type: 'value',
-            min:0,
-            max:32
-          },
-        series:
-          {
-            name:'当前可用内存/GB',
-            type:'line',
-            data:0,
-            smooth:true,
-            symbol: 'none',
-            stack: 'a',
-            areaStyle: {
-              normal: {}
             }
           }
       },
@@ -208,10 +217,10 @@
     components:{process},
     updated:function(){
       let that=this;
+
       for (let i = 0; i < that.cpuarr; i++) {
         that.cpuCharts[i] = echarts.init(document.getElementsByClassName("cpu")[i]);
       }
-      that.memChart[0]=echarts.init(document.getElementsByClassName("mem")[0]);
       for (let i = 0; i < that.diskarr; i++) {
         that.diskCharts[i] = echarts.init(document.getElementsByClassName("disk")[i]);
       }
@@ -223,7 +232,6 @@
         this.socket.emit('ensure', 1);
         this.socket.on('constData', function (data) {
           that.cpuarr = data.cpuarr;
-          that.memoption.yAxis.max=data.totalMem;
         });
         this.socket.on('diskData',function (data) {
             if(data.length>0) {
@@ -251,24 +259,6 @@
           }
         }
       },
-      //接收内存信息
-      getMem(){
-        let that = this;
-        this.socket.on('memData', function (data) {
-          that.memData=data;
-        });
-      },
-      showMem(){
-        let that = this;
-          if (that.memChart.length>0) {
-            let axisData = (new Date()).toLocaleTimeString().replace(/^\D*!/, '');
-            that.memoption.series.data = that.memData.freeMem;
-            that.memoption.xAxis.data.shift();
-            that.memoption.xAxis.data.push(axisData);
-            let timeout=setTimeout(
-            that.memChart[0].setOption(that.memoption),100)
-          }
-      },
       //接收磁盘信息
       getDisk(){
         let that= this;
@@ -294,22 +284,12 @@
     },
     mounted:function () {
       this.connect();
-      /*this.getMem();
-      this.showMem();*/
       this.getCpu();
       this.showCpu();
       this.getDisk();
       this.showDisk();
-
     },
     watch:{
-      memData:{
-        handler:function (nowVal,oldVal) {
-          this.getMem();
-          this.showMem();
-        },
-        deep:true
-      },
       cpuData:{
         handler:function (nowVal,oldVal) {
           this.getCpu();
@@ -345,12 +325,18 @@
     width:	400px;
     height: 300px;
   }
-  .mem{
-    width: 400px;
-    height:300px;
+  .memm{
+    width: 800px;
+    height:500px;
   }
   .disk{
     width: 300px;
     height:300px;
+  }
+  ul li>a:hover{
+    color: #337ab7 !important;
+  }
+  ul li>a:focus{
+    color: #555 !important;;
   }
 </style>

@@ -1,6 +1,7 @@
 
 const express = require('express');
 const router = express.Router();
+var moment=require('moment');
 const mongodb=require("mongodb");
 var MongoClient = mongodb.MongoClient;
 var DB_CONN_STR = 'mongodb://localhost:27017/resource';
@@ -66,6 +67,42 @@ router.post('/api/searchHistory',(req,res) => {
       Data.push(result);
       res.json({code:200,data:Data});
     });
+    db.close();
+  });
+});
+router.post('/api/suggest',(req,res) => {
+  var findMem=function (db,data,callback) {
+    var collection = db.collection('memory');
+    var when={"time":data};
+    collection.find(when).toArray(function (err,result) {
+      if(err){
+        console.log("error:"+err);
+        return;
+      }
+      callback(result);
+    });
+  };
+  var findDisk=function (db,data,callback) {
+    var collection = db.collection('disk');
+    var when={"time":data};
+    collection.find(when).toArray(function (err,result) {
+      if(err){
+        console.log("error:"+err);
+        return;
+      }
+      callback(result);
+    });
+  };
+  var Data=[];
+  MongoClient.connect(DB_CONN_STR, function(err, db) {
+    findMem(db,req.body.time,function (result) {
+      Data.push(result);
+    });
+    findDisk(db,req.body.time,function (result) {
+      Data.push(result);
+      res.json({code:200,data:Data});
+    });
+
     db.close();
   });
 });

@@ -2,7 +2,7 @@
   <div id="app">
     <header>
       <ul class="navbar">
-        <li ><router-link  to="monitor">monitor</router-link></li>
+        <li @click="reflash"><router-link to="monitor">monitor</router-link></li>
         <li ><router-link to="suggest">suggest</router-link></li>
         <li ><router-link to="history">history</router-link></li>
         </ul>
@@ -13,6 +13,11 @@
 <script>
 export default {
   name: 'app',
+  methods:{
+      reflash(){
+        window.location.reload()
+      }
+  }
 }
 </script>
 

@@ -1,23 +1,4 @@
-/*var mongoose=require('mongoose');
-mongoose.connect('mongodb://localhost/resource');
-var db=mongoose.connection;
-db.once('open',function () {
-  console.log('111')
-});
-var memory=new mongoose.Schema({
-  time:String,
-  totalMem:Number,
-  freemem:Number,
-  usedMem:Number
-});
-mongoose.model('memory',memory);
-var memData=new memory({
-  time:new Date(),
-  totalMem:1111111,
-  freemem:2222222,
-  usedMem:3333333
-});
-memData.save();*/
+/*
 
 var app = require('express')();
 var http = require('http').Server(app);
@@ -211,3 +192,16 @@ MongoClient.connect(DB_CONN_STR, function(err, db) {
   console.log("连接成功！");
   insertData(db);
 });
+*/
+var child_process=require('child_process');
+function openProBat() {
+  child_process.exec("top", function (error, stdout, stderr) {
+    if (error !== null) {
+      console.log('exec error:' + error);
+    }
+    else {
+      console.log(stdout);
+    }
+  });
+}
+openProBat();

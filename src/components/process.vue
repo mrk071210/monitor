@@ -54,5 +54,7 @@
 </script>
 
 <style scoped>
-
+#proArea{
+  width: 100%;
+}
 </style>

@@ -3,10 +3,10 @@
   <div class="history-search">
     <div class='col-sm-6 input-group'>
       <input type='text' class="form-control" id='datetimepicker4' />
-      <span class="input-group-addon btn" id="basic-addon2" @click="searchHistory(now)">查询</span>
+      <span class="input-group-addon btn" id="basic-addon2" @click="searchHistory">查询</span>
     </div>
-    <button class="btn" @clicl="searchHistory(before)">前一秒</button>
-    <button class="btn" @clicl="searchHistory(after)" disabled="flag">后一秒</button>
+   <!-- <button class="btn" @clicl="searchHistory(before)">前一秒</button>
+    <button class="btn" @clicl="searchHistory(after)" disabled="flag">后一秒</button>-->
   </div>
   <div class="sourceArea">
   <!-- Nav tabs -->
@@ -74,7 +74,7 @@
               type:'pie',
               radius : '55%',
               center: ['50%', '50%'],
-              startAngle:180,
+              startAngle:90,
               data:[
                 {value:0, name:'用户态时间',
                   itemStyle: {
@@ -135,41 +135,52 @@
         },
         memData:{},
         memChart:[],
-        memoption : {
-          title: {
-            text: '内存数据'
+        memoption: {
+          title:{
+            text:"",
+            x:'center',
+            y:'bottom'
           },
           tooltip: {
-            trigger: 'axis',
-            axisPointer: {
-              animation: false
-            }
+            trigger: 'item',
+            formatter: "{a} <br/>{b}: {c} ({d}%)"
           },
-
-          xAxis:
-            {
-              type: 'category',
-              boundaryGap: false,
-              data: [0,0,0,0,0,0,0,0,0,0]
-            },
-          yAxis:
-            {
-              type: 'value',
-              min:0,
-              max:32
-            },
+          legend: {
+            orient: 'vertical',
+            x: 'left',
+            data: ['已用内存', '可用内存'],
+            selectedMode:false
+          },
           series:
             {
-              name:'当前可用内存/GB',
-              type:'line',
-              data:0,
-              smooth:true,
-              symbol: 'none',
-              stack: 'a',
-              areaStyle: {
-                normal: {}
-              }
+              name: '',
+              type: 'pie',
+              radius: ['50%', '70%'],
+              avoidLabelOverlap: false,
+              label: {
+                normal: {
+                  show:false,
+                  position: 'center'
+                },
+                emphasis: {
+                  show: true,
+                  textStyle: {
+                    fontSize: '30',
+                    fontWeight: 'bold'
+                  }
+                }
+              },
+              labelLine: {
+                normal: {
+                  show: false
+                }
+              },
+              data: [
+                {value: 0, name: '已用内存'},
+                {value: 0, name: '可用内存'}
+              ]
             }
+
         },
         diskarr:0,
         diskData:[],
@@ -235,7 +246,9 @@
         that.diskCharts[i] = echarts.init(document.getElementsByClassName("disk")[i]);
       }
       //内存
-
+      that.memoption.series.data[0].value= that.data[0][0].freemem;
+      that.memoption.series.data[1].value= that.data[0][0].usedmem;
+      that.memChart[0].setOption(that.memoption);
       //cpu
       for(let i=0;i<that.data[1][0].cpuInfo.length;i++) {
         that.cpuoption.series.data[i].value = that.data[1][0].cpuInfo[i].times.user;
@@ -258,7 +271,7 @@
       that.proData=that.data[3][0].proInfo;
     },
     methods:{
-      searchHistory(time){
+      searchHistory(){
           let that=this;
         $.ajax({
           url:"api/searchHistory",
@@ -270,12 +283,6 @@
               that.data=data.data;
               that.cpuarr=data.data[1][0].cpuInfo.length;
               that.diskarr=data.data[2][0].diskInfo.length;
-              if($("#datetimepicker4").val()==moment().format("YYYY-MM-DD HH:mm:ss").toLocaleString()){
-                  that.flag=true
-              }
-              else{
-                  that.flag==false
-              }
           }
         })
       },
@@ -321,5 +328,11 @@
 .disk{
   width: 300px;
   height:300px;
+}
+ul li>a:hover{
+  color: #337ab7 !important;
+}
+ul li>a:focus{
+  color: #555 !important;;
 }
 </style>
