@@ -1,5 +1,5 @@
 <template>
-  <div class="suggest">
+  <div class="suggest" v-show="get">
     <h2>你的计算机得分:<span class="score" :class="color">{{score}}</span>分,{{suggest}}</h2>
     <h2>{{disksuggest}}</h2>
   </div>
@@ -8,19 +8,18 @@
 <script>
   export default {
     name: 'suggest',
-
     data () {
       return {
         score:0,
         color:"",
         suggest:"",
-        disksuggest:""
+        disksuggest:"",
+        get:false
       }
     },
     methods:{
       getSuggest(){
           let that = this;
-
           $.ajax({
             url:"/api/suggest",
             type:'post',
@@ -29,7 +28,7 @@
             success:function (res) {
               if(res.code==200){
                 let result=(res.data[0][0].usedmem/res.data[0][0].totalmem).toFixed(2);
-                console.log(result);
+                that.get=true;
                  if (result<0.5){
                      that.score=90;
 
@@ -51,7 +50,7 @@
                      that.suggest="计算机内存已经快要占满啦！关闭一些不必要的程序吧！";
                  }
                 if(res.data[1][0].diskInfo[0][1]/res.data[1][0].diskInfo[0][2]>0.85){
-                    that.disksuggest="系统盘快要满了，会拖慢系统运行速度，可以清理掉里面一些不必要的文件。"
+                    that.disksuggest="系统盘快要满了，可以清理掉里面一些不必要的文件。"
                 }
 
               }

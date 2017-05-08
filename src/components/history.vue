@@ -11,10 +11,10 @@
   <div class="sourceArea">
   <!-- Nav tabs -->
   <ul class="nav nav-tabs" role="tablist">
-    <li role="presentation" class="active"><a href="#memory" aria-controls="memory" role="tab" data-toggle="tab">memory</a></li>
-    <li role="presentation"><a href="#cpu" aria-controls="cpu" role="tab" data-toggle="tab">cpu</a></li>
-    <li role="presentation"><a href="#disk" aria-controls="disk" role="tab" data-toggle="tab">disk</a></li>
-    <li role="presentation"><a href="#process" aria-controls="process" role="tab" data-toggle="tab">process</a></li>
+    <li role="presentation" class="active"><a href="#memory" aria-controls="memory" role="tab" data-toggle="tab">内存</a></li>
+    <li role="presentation"><a href="#cpu" aria-controls="cpu" role="tab" data-toggle="tab">CPU</a></li>
+    <li role="presentation"><a href="#disk" aria-controls="disk" role="tab" data-toggle="tab">磁盘</a></li>
+    <li role="presentation"><a href="#process" aria-controls="process" role="tab" data-toggle="tab">进程</a></li>
   </ul>
   <!-- Tab panes -->
   <div class="tab-content">
@@ -24,10 +24,10 @@
     <div role="tabpanel" class="tab-pane" id="process">
       <table class="table table-striped table-hover">
         <tr>
-          <th>Name</th>
-          <th>ProcessId</th>
-          <th>ThreadCount</th>
-          <th>WorkingSetSize</th>
+          <th>名称</th>
+          <th>PID</th>
+          <th>线程数</th>
+          <th>占用空间</th>
         </tr>
         <tbody class="table table-striped processInfo">
         <tr v-for="item in proData">

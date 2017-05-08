@@ -2,9 +2,9 @@
   <div id="app">
     <header>
       <ul class="navbar">
-        <li @click="reflash"><router-link to="monitor">monitor</router-link></li>
-        <li ><router-link to="suggest">suggest</router-link></li>
-        <li ><router-link to="history">history</router-link></li>
+        <li @click="reflash"><router-link to="monitor">实时监测</router-link></li>
+        <li ><router-link to="suggest">得分</router-link></li>
+        <li ><router-link to="history">历史记录</router-link></li>
         </ul>
     </header>
     <router-view></router-view>

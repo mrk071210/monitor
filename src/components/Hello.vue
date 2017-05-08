@@ -1,7 +1,6 @@
 <template>
   <div class="hello">
-    <button class="btn" @click="testPost">post</button>
-    <button class="btn" @click="testGet">get</button>
+
   </div>
 </template>
 

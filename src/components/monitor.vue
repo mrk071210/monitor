@@ -2,10 +2,10 @@
   <div class="sourceArea">
     <!-- Nav tabs -->
     <ul class="nav nav-tabs" role="tablist">
-      <li role="presentation" class="active"><a href="#memory" aria-controls="memory" role="tab" data-toggle="tab">memory</a></li>
-      <li role="presentation"><a href="#cpu" aria-controls="cpu" role="tab" data-toggle="tab">cpu</a></li>
-      <li role="presentation"><a href="#disk" aria-controls="disk" role="tab" data-toggle="tab">disk</a></li>
-      <li role="presentation"><a href="#process" aria-controls="process" role="tab" data-toggle="tab">process</a></li>
+      <li role="presentation" class="active"><a href="#memory" aria-controls="memory" role="tab" data-toggle="tab">内存</a></li>
+      <li role="presentation"><a href="#cpu" aria-controls="cpu" role="tab" data-toggle="tab">CPU</a></li>
+      <li role="presentation"><a href="#disk" aria-controls="disk" role="tab" data-toggle="tab">磁盘</a></li>
+      <li role="presentation"><a href="#process" aria-controls="process" role="tab" data-toggle="tab">进程</a></li>
     </ul>
     <!-- Tab panes -->
     <div class="tab-content">

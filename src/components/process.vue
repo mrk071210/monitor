@@ -2,10 +2,10 @@
   <div id="proArea">
             <table class="table table-striped table-hover">
               <tr>
-                <th>Name</th>
-                <th>ProcessId</th>
-                <th>ThreadCount</th>
-                <th>WorkingSetSize</th>
+                <th>名称</th>
+                <th>PID</th>
+                <th>线程数</th>
+                <th>占用空间</th>
               </tr>
               <tbody class="table table-striped processInfo">
                 <tr v-for="item in proData">
